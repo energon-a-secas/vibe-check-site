@@ -3,36 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Vibes — Quantify Candidate Behavioral Assessment</title>
-    <meta name="description" content="A structured behavioral assessment tool for interviewers. Score candidates across 18 questions in 6 categories — communication, consistency, technical credibility, ownership, problem-solving, and vibe — and generate downloadable reports.">
+    <title>Interview Vibes — Behavioral Assessment Scorecard for Technical Interviews</title>
+    <meta name="description" content="Free interviewer scorecard tool. Rate candidates across 18 behavioral questions in 6 categories — communication, story consistency, technical credibility, ownership, problem-solving, and vibe. Generate internal review and candidate feedback reports as markdown.">
     <meta name="author" content="Luciano Adonis">
-    <meta name="keywords" content="interview assessment, candidate evaluation, behavioral interview, hiring tool, interviewer scorecard, candidate scoring, interview feedback, technical interview, DevOps interview, Cloud interview">
-    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="interview scorecard, candidate assessment tool, behavioral interview questions, hiring rubric, interviewer evaluation form, technical interview scoring, DevOps interview, Cloud engineer interview, candidate feedback template, interview rating system, structured interview, hiring decision tool">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
     <link rel="canonical" href="https://lucianoadonis.github.io/Interview-Insight/">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Interview Vibes — Quantify Candidate Behavioral Assessment">
-    <meta property="og:description" content="Stop relying on gut feeling. Score candidates across communication, consistency, technical depth, ownership, problem-solving, and vibe. Generate internal and candidate-facing reports.">
+    <meta property="og:title" content="Interview Vibes — Behavioral Assessment Scorecard">
+    <meta property="og:description" content="Stop relying on gut feeling. Score candidates across communication, consistency, technical depth, ownership, problem-solving, and vibe. Generate internal and candidate-facing reports. Free, no sign-up, runs in your browser.">
     <meta property="og:url" content="https://lucianoadonis.github.io/Interview-Insight/">
     <meta property="og:site_name" content="Interview Vibes">
     <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="https://lucianoadonis.github.io/Interview-Insight/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Interview Vibes — A behavioral assessment scorecard showing candidate scoring across 6 categories">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Interview Vibes — Quantify Candidate Behavioral Assessment">
-    <meta name="twitter:description" content="A structured behavioral assessment tool. 18 questions, 6 categories, downloadable reports. Quantify the vibes you get from someone.">
+    <meta name="twitter:title" content="Interview Vibes — Behavioral Assessment Scorecard">
+    <meta name="twitter:description" content="Free interview scorecard. 18 questions, 6 categories, downloadable markdown reports. Quantify the vibes you get from someone.">
+    <meta name="twitter:image" content="https://lucianoadonis.github.io/Interview-Insight/og-image.png">
+    <meta name="twitter:image:alt" content="Interview Vibes — Candidate behavioral assessment scorecard">
 
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon-32x32.png">
 
     <!-- Theme -->
     <meta name="theme-color" content="#040714">
     <meta name="color-scheme" content="dark">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Interview Vibes">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WBYF22LDTN"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-WBYF22LDTN');
+    </script>
 
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -40,21 +57,79 @@
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "Interview Vibes",
-        "description": "A structured behavioral assessment tool for interviewers. Score candidates across 18 questions in 6 categories and generate downloadable markdown reports.",
+        "headline": "Behavioral Assessment Scorecard for Technical Interviews",
+        "description": "A free, browser-based behavioral assessment scorecard for interviewers. Rate candidates across 18 questions in 6 categories — communication, story consistency, technical credibility, ownership, problem-solving, and vibe. Generates downloadable internal review and candidate feedback reports.",
         "url": "https://lucianoadonis.github.io/Interview-Insight/",
         "applicationCategory": "BusinessApplication",
+        "applicationSubCategory": "Human Resources",
         "operatingSystem": "Any",
-        "browserRequirements": "Requires a modern web browser",
+        "browserRequirements": "Requires a modern web browser with JavaScript",
+        "softwareVersion": "1.0",
+        "inLanguage": "en",
+        "isAccessibleForFree": true,
         "offers": {
             "@type": "Offer",
             "price": "0",
             "priceCurrency": "USD"
         },
+        "featureList": [
+            "18 behavioral assessment questions across 6 categories",
+            "Real-time scoring with pass probability percentage",
+            "Optional probe questions for deeper investigation",
+            "Downloadable internal review report (Markdown)",
+            "Downloadable candidate feedback report (Markdown)",
+            "Help tooltips with suggested interview questions",
+            "No server required — runs entirely in the browser"
+        ],
         "author": {
             "@type": "Person",
             "name": "Luciano Adonis",
-            "url": "https://lucianoadonis.medium.com"
-        }
+            "url": "https://lucianoadonis.medium.com",
+            "sameAs": [
+                "https://lucianoadonis.medium.com",
+                "https://github.com/LucianoAdonis"
+            ]
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "Luciano Adonis"
+        },
+        "datePublished": "2026-02-21",
+        "keywords": "interview scorecard, behavioral assessment, candidate evaluation, hiring rubric, technical interview"
+    }
+    </script>
+
+    <!-- FAQ Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What does Interview Vibes assess?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Interview Vibes scores candidates across 6 behavioral categories: Communication & Clarity, Story Consistency, Technical Credibility, Ownership & Accountability, Problem-Solving & Pressure, and The Vibe. Each category has 3 questions scored 0-2, for a maximum of 36 points."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How is the pass probability calculated?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Pass probability is the candidate's score divided by 36 (maximum), expressed as a percentage. Verdicts range from Strong Pass (83-100%), Likely Pass (67-82%), Borderline (50-66%), Unlikely (33-49%), to No Pass (0-32%)."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does Interview Vibes store any data?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. Interview Vibes runs entirely in your browser. No data is sent to any server. Reports are generated locally and downloaded as markdown files."
+                }
+            }
+        ]
     }
     </script>
 

@@ -43,12 +43,24 @@ test.describe('Page Load', () => {
     const ogTitle = await page.locator('meta[property="og:title"]').getAttribute('content');
     expect(ogTitle).toBeTruthy();
 
+    const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content');
+    expect(ogImage).toBeTruthy();
+
     const twitterCard = await page.locator('meta[name="twitter:card"]').getAttribute('content');
     expect(twitterCard).toBe('summary_large_image');
 
-    const jsonLd = await page.locator('script[type="application/ld+json"]').textContent();
-    const schema = JSON.parse(jsonLd);
-    expect(schema['@type']).toBe('WebApplication');
+    const twitterImage = await page.locator('meta[name="twitter:image"]').getAttribute('content');
+    expect(twitterImage).toBeTruthy();
+
+    const jsonLdElements = await page.locator('script[type="application/ld+json"]').all();
+    expect(jsonLdElements.length).toBeGreaterThanOrEqual(2);
+
+    const appSchema = JSON.parse(await jsonLdElements[0].textContent());
+    expect(appSchema['@type']).toBe('WebApplication');
+    expect(appSchema.featureList).toBeTruthy();
+
+    const faqSchema = JSON.parse(await jsonLdElements[1].textContent());
+    expect(faqSchema['@type']).toBe('FAQPage');
   });
 
   test('has semantic HTML landmarks', async ({ page }) => {
