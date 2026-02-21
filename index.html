@@ -3,7 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Vibes — Candidate Assessment</title>
+    <title>Interview Vibes — Quantify Candidate Behavioral Assessment</title>
+    <meta name="description" content="A structured behavioral assessment tool for interviewers. Score candidates across 18 questions in 6 categories — communication, consistency, technical credibility, ownership, problem-solving, and vibe — and generate downloadable reports.">
+    <meta name="author" content="Luciano Adonis">
+    <meta name="keywords" content="interview assessment, candidate evaluation, behavioral interview, hiring tool, interviewer scorecard, candidate scoring, interview feedback, technical interview, DevOps interview, Cloud interview">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://lucianoadonis.github.io/Interview-Insight/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Interview Vibes — Quantify Candidate Behavioral Assessment">
+    <meta property="og:description" content="Stop relying on gut feeling. Score candidates across communication, consistency, technical depth, ownership, problem-solving, and vibe. Generate internal and candidate-facing reports.">
+    <meta property="og:url" content="https://lucianoadonis.github.io/Interview-Insight/">
+    <meta property="og:site_name" content="Interview Vibes">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Interview Vibes — Quantify Candidate Behavioral Assessment">
+    <meta name="twitter:description" content="A structured behavioral assessment tool. 18 questions, 6 categories, downloadable reports. Quantify the vibes you get from someone.">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#040714">
+    <meta name="color-scheme" content="dark">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Interview Vibes",
+        "description": "A structured behavioral assessment tool for interviewers. Score candidates across 18 questions in 6 categories and generate downloadable markdown reports.",
+        "url": "https://lucianoadonis.github.io/Interview-Insight/",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires a modern web browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Luciano Adonis",
+            "url": "https://lucianoadonis.medium.com"
+        }
+    }
+    </script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -83,6 +137,25 @@
         .reset-button { width: 100%; margin-top: 16px; padding: 12px 16px; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15); border-radius: 10px; color: rgba(255,255,255,0.6); font-size: 0.85em; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
         .reset-button:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.9); transform: translateY(-2px); }
         .reset-button:active { transform: translateY(0); }
+
+        /* Auto-advance highlight */
+        @keyframes questionPulse {
+            0% { box-shadow: inset 0 0 0 0 rgba(0, 99, 229, 0); background: transparent; }
+            20% { box-shadow: inset 0 0 0 2px rgba(0, 99, 229, 0.35); background: rgba(0, 99, 229, 0.04); }
+            100% { box-shadow: inset 0 0 0 0 rgba(0, 99, 229, 0); background: transparent; }
+        }
+        @keyframes sectionPulse {
+            0% { border-color: rgba(255, 255, 255, 0.1); }
+            25% { border-color: rgba(0, 99, 229, 0.45); }
+            100% { border-color: rgba(255, 255, 255, 0.1); }
+        }
+        .control-group.highlight-next {
+            animation: questionPulse 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+            border-radius: 10px;
+        }
+        .card.highlight-section {
+            animation: sectionPulse 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
 
         /* Cards */
         .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 30px; margin-bottom: 20px; backdrop-filter: blur(10px); }
@@ -192,20 +265,21 @@
     </style>
 </head>
 <body>
-    <div class="header-bar">
+    <header class="header-bar" role="banner">
         <div class="header-logo">
             <div>
                 <h1>Interview Vibes</h1>
                 <div class="header-subtitle">Candidate Assessment Tool</div>
             </div>
         </div>
-        <nav>
-            <a href="interview-vibes.html" class="active">Assessment</a>
+        <nav aria-label="Main navigation">
+            <a href="javascript:void(0)" onclick="resetAssessment()" class="active">Reset</a>
+            <a href="https://lucianoadonis.medium.com/list/tips-entrevistas-32c6eb8c1547" target="_blank" rel="noopener noreferrer">Medium</a>
         </nav>
-    </div>
+    </header>
 
-    <div class="main-container">
-        <div class="content-area">
+    <div class="main-container" role="main">
+        <main class="content-area" aria-label="Assessment form">
 
             <!-- Candidate Info -->
             <div class="card">
@@ -484,6 +558,78 @@
                         <div class="radio-option opt-bad"><input type="radio" id="solve-3-c" name="solve-3" value="0"><label for="solve-3-c">Checked out</label></div>
                     </div>
                 </div>
+
+                <details class="probe-dropdown" id="solve-probes">
+                    <summary class="probe-toggle">Probe Deeper <span class="probe-tag" id="solve-probe-tag">(Optional)</span></summary>
+                    <div class="probe-content">
+                        <p class="probe-hint">Use hypothetical scenarios to test whether they truly understand design patterns and system logic, or just memorized answers.</p>
+
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label class="control-label">Can they reason through a design trade-off they haven't rehearsed?</label>
+                                <button class="help-trigger" onclick="showHelp('solve-p1')" type="button">?</button>
+                            </div>
+                            <p class="control-description">Present a trade-off between two valid approaches and see if they reason through it or freeze</p>
+                            <div class="radio-group">
+                                <div class="radio-option opt-good"><input type="radio" id="sp1-a" name="solve-p1" value="2"><label for="sp1-a">Reasons well</label></div>
+                                <div class="radio-option"><input type="radio" id="sp1-b" name="solve-p1" value="1" checked><label for="sp1-b">Partial</label></div>
+                                <div class="radio-option opt-bad"><input type="radio" id="sp1-c" name="solve-p1" value="0"><label for="sp1-c">Cannot</label></div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label class="control-label">Do they understand what breaks when you change a constraint?</label>
+                                <button class="help-trigger" onclick="showHelp('solve-p2')" type="button">?</button>
+                            </div>
+                            <p class="control-description">Change a variable in their own story and see if they can predict the consequences</p>
+                            <div class="radio-group">
+                                <div class="radio-option opt-good"><input type="radio" id="sp2-a" name="solve-p2" value="2"><label for="sp2-a">Predicts it</label></div>
+                                <div class="radio-option"><input type="radio" id="sp2-b" name="solve-p2" value="1" checked><label for="sp2-b">Guesses</label></div>
+                                <div class="radio-option opt-bad"><input type="radio" id="sp2-c" name="solve-p2" value="0"><label for="sp2-c">No idea</label></div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label class="control-label">Can they explain when NOT to use a pattern they mentioned?</label>
+                                <button class="help-trigger" onclick="showHelp('solve-p3')" type="button">?</button>
+                            </div>
+                            <p class="control-description">Someone who really understands a tool knows its limits, not just its strengths</p>
+                            <div class="radio-group">
+                                <div class="radio-option opt-good"><input type="radio" id="sp3-a" name="solve-p3" value="2"><label for="sp3-a">Knows limits</label></div>
+                                <div class="radio-option"><input type="radio" id="sp3-b" name="solve-p3" value="1" checked><label for="sp3-b">Vague sense</label></div>
+                                <div class="radio-option opt-bad"><input type="radio" id="sp3-c" name="solve-p3" value="0"><label for="sp3-c">Blindly applies</label></div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label class="control-label">Can they simplify an over-engineered proposal?</label>
+                                <button class="help-trigger" onclick="showHelp('solve-p4')" type="button">?</button>
+                            </div>
+                            <p class="control-description">Propose something unnecessarily complex and see if they push back or blindly agree</p>
+                            <div class="radio-group">
+                                <div class="radio-option opt-good"><input type="radio" id="sp4-a" name="solve-p4" value="2"><label for="sp4-a">Simplifies</label></div>
+                                <div class="radio-option"><input type="radio" id="sp4-b" name="solve-p4" value="1" checked><label for="sp4-b">Hesitates</label></div>
+                                <div class="radio-option opt-bad"><input type="radio" id="sp4-c" name="solve-p4" value="0"><label for="sp4-c">Agrees blindly</label></div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-header">
+                                <label class="control-label">Can they walk through debugging a system they didn't build?</label>
+                                <button class="help-trigger" onclick="showHelp('solve-p5')" type="button">?</button>
+                            </div>
+                            <p class="control-description">Describe a broken scenario and see if they have a systematic approach or just guess</p>
+                            <div class="radio-group">
+                                <div class="radio-option opt-good"><input type="radio" id="sp5-a" name="solve-p5" value="2"><label for="sp5-a">Systematic</label></div>
+                                <div class="radio-option"><input type="radio" id="sp5-b" name="solve-p5" value="1" checked><label for="sp5-b">Ad hoc</label></div>
+                                <div class="radio-option opt-bad"><input type="radio" id="sp5-c" name="solve-p5" value="0"><label for="sp5-c">Lost</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
             </div>
 
             <!-- The Vibe -->
@@ -539,10 +685,10 @@
                 </div>
             </div>
 
-        </div>
+        </main>
 
         <!-- Sidebar -->
-        <div class="score-sidebar">
+        <aside class="score-sidebar" aria-label="Score summary">
             <div class="score-card" id="score-card">
                 <div class="score-label">Pass Probability</div>
                 <div class="score-value" id="score-pct">50<span>%</span></div>
@@ -562,8 +708,14 @@
                 </div>
                 <button class="reset-button" onclick="resetAssessment()">Reset Assessment</button>
             </div>
-        </div>
+        </aside>
     </div>
+
+    <noscript>
+        <div style="background:#0063e5;color:#fff;padding:20px;text-align:center;font-family:sans-serif;">
+            This assessment tool requires JavaScript to calculate scores and generate reports. Please enable JavaScript to use Interview Vibes.
+        </div>
+    </noscript>
 
     <!-- Help Modal -->
     <div class="help-overlay" id="help-overlay" onclick="if(event.target===this)closeHelp()">
@@ -606,10 +758,15 @@
             'vibe-3':  'Is their response pace reasonable?',
             'tech-p1': 'Does their exposure come from hands-on work?',
             'tech-p2': 'Can they elaborate on specific implementations?',
-            'own-p1':  'Is this their direct experience or a coworker\'s?'
+            'own-p1':  'Is this their direct experience or a coworker\'s?',
+            'solve-p1': 'Can they reason through a design trade-off they haven\'t rehearsed?',
+            'solve-p2': 'Do they understand what breaks when you change a constraint?',
+            'solve-p3': 'Can they explain when NOT to use a pattern they mentioned?',
+            'solve-p4': 'Can they simplify an over-engineered proposal?',
+            'solve-p5': 'Can they walk through debugging a system they didn\'t build?'
         };
 
-        const PROBE_NAMES = ['tech-p1', 'tech-p2', 'own-p1'];
+        const PROBE_NAMES = ['tech-p1', 'tech-p2', 'own-p1', 'solve-p1', 'solve-p2', 'solve-p3', 'solve-p4', 'solve-p5'];
 
         // ── Help content for each question ──
         const HELP_CONTENT = {
@@ -898,6 +1055,76 @@
                     'Can describe their specific contribution without hesitation',
                     'Doesn\'t get nervous when you ask "who exactly did what"'
                 ]
+            },
+            'solve-p1': {
+                title: 'Unrehearsed Design Trade-offs',
+                objective: 'Anyone can memorize "use microservices for scalability." This probe tests if they actually understand the WHY behind architectural decisions by presenting a trade-off they haven\'t prepared for.',
+                ask: [
+                    '"Your service needs to process payments. Would you go sync or async? Why?"',
+                    '"You\'re choosing between a monolith and microservices for a new project with 3 devs. Walk me through your thinking."',
+                    '"REST or event-driven for this communication? What changes your answer?"'
+                ],
+                lookFor: [
+                    'Asks clarifying questions before jumping to an answer (team size, traffic, timeline)',
+                    'Weighs pros and cons instead of giving a one-size-fits-all answer',
+                    'Can change their recommendation when you change the constraints'
+                ]
+            },
+            'solve-p2': {
+                title: 'Constraint Change Impact',
+                objective: 'Take something from their own project and change a variable. If they built it, they\'ll instantly know what breaks. If they memorized it, they\'ll stall.',
+                ask: [
+                    '"You said you used [X]. What if the traffic was 100x — what breaks first?"',
+                    '"What if you couldn\'t use [the database they mentioned]? What changes?"',
+                    '"What happens to your pipeline if that service goes down at 2 AM?"'
+                ],
+                lookFor: [
+                    'Immediately identifies the bottleneck or failure point',
+                    'Thinks in terms of cascading effects, not isolated components',
+                    'Has war stories about when constraints actually changed on them'
+                ]
+            },
+            'solve-p3': {
+                title: 'Knowing When NOT to Use Something',
+                objective: 'The strongest signal of real understanding is knowing the limits. If someone says "I use Kubernetes," ask them when they wouldn\'t. Memorized knowledge only covers the happy path.',
+                ask: [
+                    '"You mentioned [pattern/tool]. When would you NOT use it?"',
+                    '"What\'s the worst scenario for using [their mentioned technology]?"',
+                    '"If a junior dev suggested [pattern] for a simple CRUD app, what would you tell them?"'
+                ],
+                lookFor: [
+                    'Can articulate specific downsides, not just "it depends"',
+                    'Gives real examples of where it\'s overkill or a bad fit',
+                    'Shows judgment — knows the difference between "can" and "should"'
+                ]
+            },
+            'solve-p4': {
+                title: 'Simplification Under Pressure',
+                objective: 'Propose something needlessly complex and see if they push back. People who truly understand systems prefer simplicity. People who memorized patterns will agree with anything that sounds sophisticated.',
+                ask: [
+                    '"What if we add a message queue, a cache layer, and a separate auth service for this internal tool with 10 users?"',
+                    '"Should we use a multi-region active-active setup for this dev environment?"',
+                    '"Let\'s add Kubernetes orchestration for these 2 containers — good idea?"'
+                ],
+                lookFor: [
+                    'Pushes back — "that\'s overkill for this use case"',
+                    'Proposes a simpler alternative with reasoning',
+                    'Doesn\'t just agree because the interviewer suggested it'
+                ]
+            },
+            'solve-p5': {
+                title: 'Debugging an Unfamiliar System',
+                objective: 'Describe a broken scenario they\'ve never seen and watch their methodology. Real engineers have a systematic approach. Memorizers will guess randomly or give textbook answers.',
+                ask: [
+                    '"Users report the app is slow but only after 3 PM. Where do you start?"',
+                    '"Deploys work fine but the service crashes 10 minutes later every time. Walk me through it."',
+                    '"Logs show intermittent 503s from one service. How do you narrow it down?"'
+                ],
+                lookFor: [
+                    'Starts with data: logs, metrics, recent changes — not guessing',
+                    'Has a structured approach: reproduce, isolate, identify, fix',
+                    'Asks smart questions about the system before proposing solutions'
+                ]
             }
         };
 
@@ -1050,6 +1277,17 @@
                 ownEl.classList.remove('recommended');
                 ownTag.textContent = '(Optional)';
             }
+
+            var solveWeak = ['solve-1','solve-2','solve-3'].some(function(n) { return getVal(n) === 0; });
+            var solveEl = document.getElementById('solve-probes');
+            var solveTag = document.getElementById('solve-probe-tag');
+            if (solveWeak) {
+                solveEl.classList.add('recommended');
+                solveTag.textContent = '(Recommended)';
+            } else {
+                solveEl.classList.remove('recommended');
+                solveTag.textContent = '(Optional)';
+            }
         }
 
         // ── Internal Report ──
@@ -1088,6 +1326,14 @@
                 if (key === 'own' && document.getElementById('own-probes').open) {
                     md += '> **Probe Findings:**  \n';
                     md += '> - Direct experience: **' + getLabel('own-p1') + '** (' + getVal('own-p1') + '/2)  \n\n';
+                }
+                if (key === 'solve' && document.getElementById('solve-probes').open) {
+                    md += '> **Probe Findings:**  \n';
+                    md += '> - Design trade-offs: **' + getLabel('solve-p1') + '** (' + getVal('solve-p1') + '/2)  \n';
+                    md += '> - Constraint changes: **' + getLabel('solve-p2') + '** (' + getVal('solve-p2') + '/2)  \n';
+                    md += '> - Pattern limitations: **' + getLabel('solve-p3') + '** (' + getVal('solve-p3') + '/2)  \n';
+                    md += '> - Simplification: **' + getLabel('solve-p4') + '** (' + getVal('solve-p4') + '/2)  \n';
+                    md += '> - Unfamiliar debugging: **' + getLabel('solve-p5') + '** (' + getVal('solve-p5') + '/2)  \n\n';
                 }
             }
             md += '---\n\n';
@@ -1202,14 +1448,98 @@
             });
             document.getElementById('tech-probes').removeAttribute('open');
             document.getElementById('own-probes').removeAttribute('open');
+            document.getElementById('solve-probes').removeAttribute('open');
             calculate();
+        }
+
+        // ── Auto-advance logic ──
+        // Build ordered list of all question groups (base + probes) with their parent cards
+        var questionOrder = [];
+        var cards = document.querySelectorAll('.content-area > .card');
+        cards.forEach(function(card) {
+            // Get direct control-groups (base questions)
+            var groups = card.querySelectorAll(':scope > .control-group');
+            groups.forEach(function(g) {
+                var radio = g.querySelector('input[type="radio"]');
+                if (radio) questionOrder.push({ group: g, card: card, name: radio.name, isProbe: false });
+            });
+            // Get probe control-groups inside details
+            var probeGroups = card.querySelectorAll('.probe-content > .control-group');
+            probeGroups.forEach(function(g) {
+                var radio = g.querySelector('input[type="radio"]');
+                if (radio) questionOrder.push({ group: g, card: card, name: radio.name, isProbe: true });
+            });
+        });
+
+        function scrollToElement(el, highlightClass) {
+            var headerHeight = document.querySelector('.header-bar').offsetHeight + 30;
+            var rect = el.getBoundingClientRect();
+            var scrollTop = window.pageYOffset + rect.top - headerHeight;
+            window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+            // Wait for scroll to settle before highlighting
+            setTimeout(function() {
+                el.classList.remove(highlightClass);
+                void el.offsetWidth;
+                el.classList.add(highlightClass);
+                el.addEventListener('animationend', function handler() {
+                    el.classList.remove(highlightClass);
+                    el.removeEventListener('animationend', handler);
+                });
+            }, 350);
+        }
+
+        function advanceToNext(radioName) {
+            var currentIdx = -1;
+            for (var i = 0; i < questionOrder.length; i++) {
+                if (questionOrder[i].name === radioName) { currentIdx = i; break; }
+            }
+            if (currentIdx === -1) return;
+
+            var current = questionOrder[currentIdx];
+            var next = questionOrder[currentIdx + 1];
+
+            // If last question in a section, try to go to next card
+            if (!next || next.card !== current.card) {
+                // Find next card that isn't the notes card
+                var cardIdx = Array.prototype.indexOf.call(cards, current.card);
+                var nextCard = cards[cardIdx + 1];
+                if (nextCard && nextCard.querySelector('.control-group')) {
+                    setTimeout(function() {
+                        scrollToElement(nextCard, 'highlight-section');
+                    }, 500);
+                }
+                return;
+            }
+
+            // If next question is a probe inside a closed details, skip to next card
+            if (next.isProbe) {
+                var details = next.group.closest('details');
+                if (details && !details.open) {
+                    var cardIdx2 = Array.prototype.indexOf.call(cards, current.card);
+                    var nextCard2 = cards[cardIdx2 + 1];
+                    if (nextCard2 && nextCard2.querySelector('.control-group')) {
+                        setTimeout(function() {
+                            scrollToElement(nextCard2, 'highlight-section');
+                        }, 300);
+                    }
+                    return;
+                }
+            }
+
+            // Advance to next question
+            setTimeout(function() {
+                scrollToElement(next.group, 'highlight-next');
+            }, 500);
         }
 
         // ── Event listeners ──
         var allRadioNames = Object.keys(CATEGORIES).reduce(function(arr, k) { return arr.concat(CATEGORIES[k].questions); }, []).concat(PROBE_NAMES);
         allRadioNames.forEach(function(name) {
             document.querySelectorAll('input[name="' + name + '"]').forEach(function(radio) {
-                radio.addEventListener('change', calculate);
+                radio.addEventListener('change', function() {
+                    calculate();
+                    advanceToNext(name);
+                });
             });
         });
 

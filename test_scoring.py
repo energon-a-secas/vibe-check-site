@@ -1,7 +1,7 @@
 """
 Interview Vibes — Scoring Logic Tests
 
-Replicates the scoring algorithm from interview-vibes.html and tests
+Replicates the scoring algorithm from index.html and tests
 various candidate profiles to validate scoring, verdicts, and report
 generation logic.
 
@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 
-# ── Scoring engine (mirrors interview-vibes.html logic) ──
+# ── Scoring engine (mirrors index.html logic) ──
 
 CATEGORIES = {
     "comm":  {"questions": ["comm-1", "comm-2", "comm-3"],    "name": "Communication & Clarity",    "short": "Communication"},
@@ -28,7 +28,7 @@ ALL_QUESTIONS = []
 for cat in CATEGORIES.values():
     ALL_QUESTIONS.extend(cat["questions"])
 
-PROBE_QUESTIONS = ["tech-p1", "tech-p2", "own-p1"]
+PROBE_QUESTIONS = ["tech-p1", "tech-p2", "own-p1", "solve-p1", "solve-p2", "solve-p3", "solve-p4", "solve-p5"]
 
 VERDICTS = [
     {"min": 83, "label": "Strong Pass",  "cls": "verdict-strong-pass"},
@@ -65,6 +65,7 @@ def calculate_score(answers: dict) -> dict:
     # Determine probe recommendations
     tech_weak = any(answers.get(q, 1) == 0 for q in CATEGORIES["tech"]["questions"])
     own_weak = any(answers.get(q, 1) == 0 for q in CATEGORIES["own"]["questions"])
+    solve_weak = any(answers.get(q, 1) == 0 for q in CATEGORIES["solve"]["questions"])
 
     # Probe scores (if provided)
     probe_scores = {}
@@ -89,6 +90,7 @@ def calculate_score(answers: dict) -> dict:
         "weak_categories": weak_cats,
         "tech_probe_recommended": tech_weak,
         "own_probe_recommended": own_weak,
+        "solve_probe_recommended": solve_weak,
         "probe_scores": probe_scores,
     }
 
@@ -290,6 +292,7 @@ class TestProbeRecommendations(unittest.TestCase):
         result = calculate_score({q: 1 for q in ALL_QUESTIONS})
         self.assertFalse(result["tech_probe_recommended"])
         self.assertFalse(result["own_probe_recommended"])
+        self.assertFalse(result["solve_probe_recommended"])
 
     def test_tech_probe_on_zero(self):
         answers = {q: 1 for q in ALL_QUESTIONS}
@@ -312,6 +315,23 @@ class TestProbeRecommendations(unittest.TestCase):
         result = calculate_score(answers)
         self.assertTrue(result["tech_probe_recommended"])
         self.assertTrue(result["own_probe_recommended"])
+
+    def test_solve_probe_on_zero(self):
+        answers = {q: 1 for q in ALL_QUESTIONS}
+        answers["solve-1"] = 0
+        result = calculate_score(answers)
+        self.assertTrue(result["solve_probe_recommended"])
+        self.assertFalse(result["tech_probe_recommended"])
+
+    def test_all_probes_triggered(self):
+        answers = {q: 1 for q in ALL_QUESTIONS}
+        answers["tech-1"] = 0
+        answers["own-3"] = 0
+        answers["solve-2"] = 0
+        result = calculate_score(answers)
+        self.assertTrue(result["tech_probe_recommended"])
+        self.assertTrue(result["own_probe_recommended"])
+        self.assertTrue(result["solve_probe_recommended"])
 
     def test_probe_scores_tracked(self):
         answers = {q: 1 for q in ALL_QUESTIONS}
@@ -494,13 +514,16 @@ if __name__ == "__main__":
     for p in profiles:
         r = calculate_score(p["answers"])
         probes_str = ""
-        if r["tech_probe_recommended"] or r["own_probe_recommended"]:
+        if r["tech_probe_recommended"] or r["own_probe_recommended"] or r["solve_probe_recommended"]:
             probes_str = " [PROBES: "
+            parts = []
             if r["tech_probe_recommended"]:
-                probes_str += "tech"
+                parts.append("tech")
             if r["own_probe_recommended"]:
-                probes_str += (" + " if r["tech_probe_recommended"] else "") + "own"
-            probes_str += "]"
+                parts.append("own")
+            if r["solve_probe_recommended"]:
+                parts.append("solve")
+            probes_str += " + ".join(parts) + "]"
         print(f"  {p['name']:40s} {r['total']:2d}/36 ({r['percentage']:3d}%) -> {r['verdict']}{probes_str}")
         if p["description"]:
             print(f"    {p['description']}")

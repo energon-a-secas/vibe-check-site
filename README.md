@@ -13,7 +13,7 @@ Based on practical experience from conducting and preparing people for technical
 ## How It Works
 
 - 18 base questions across 6 categories, each scored 0-1-2
-- 3 optional probe questions that dig deeper into Technical and Ownership concerns
+- 8 optional probe questions that dig deeper into Technical, Ownership, and Problem-Solving concerns
 - A pass probability percentage with verdict (Strong Pass / Likely Pass / Borderline / Unlikely / No Pass)
 - Two downloadable markdown reports: one for internal PM review, one for candidate feedback
 
@@ -72,6 +72,16 @@ Based on practical experience from conducting and preparing people for technical
 | 14 | Can they reason in real-time? | Systematic, asks clarifying Qs | Gets there slowly | Cannot work through unknowns | Troubleshooting capability |
 | 15 | Do they stay engaged under pressure? | Leans in, stays constructive | Energy fades but persists | Checks out or gets defensive | Client-pressure resilience |
 
+**Probe questions** (optional, recommended when any question above scores 0):
+
+| # | Probe Question | Good (2) | Neutral (1) | Red Flag (0) |
+|---|----------------|----------|-------------|---------------|
+| P4 | Can they reason through a design trade-off they haven't rehearsed? | Weighs pros/cons, asks clarifying Qs | Partial reasoning | Cannot reason through it |
+| P5 | Do they understand what breaks when you change a constraint? | Predicts cascading effects | Guesses | No idea |
+| P6 | Can they explain when NOT to use a pattern they mentioned? | Knows limits and downsides | Vague sense | Blindly applies patterns |
+| P7 | Can they simplify an over-engineered proposal? | Pushes back with reasoning | Hesitates | Agrees blindly |
+| P8 | Can they walk through debugging a system they didn't build? | Systematic approach | Ad hoc guessing | Lost |
+
 ### The Vibe
 
 | # | Question | Good (2) | Neutral (1) | Red Flag (0) | What It Measures |
@@ -125,7 +135,7 @@ Test profiles include: strong candidate, AI-only candidate, inconsistent storyte
 
 ## Files
 
-- `interview-vibes.html` — The assessment tool (single-file, no dependencies)
+- `index.html` — The assessment tool (single-file, no dependencies)
 - `test_scoring.py` — Python unit tests for scoring logic
 - `part-1.md` — Interview preparation and mindset
 - `part-2.md` — Interview phases and the "feeling" factor
@@ -133,4 +143,4 @@ Test profiles include: strong candidate, AI-only candidate, inconsistent storyte
 
 ## Usage
 
-Open `interview-vibes.html` in any browser. No server required. Fill in the assessment during or after an interview, download the reports, share with your PM.
+Open `index.html` in any browser. No server required. Fill in the assessment during or after an interview, download the reports, share with your PM.
