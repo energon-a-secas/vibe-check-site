@@ -323,6 +323,49 @@
         .probe-hint { font-size: 0.82em; color: #cacaca; margin: 8px 0 20px 0; line-height: 1.5; }
         .probe-content .control-group { margin-bottom: 24px; }
 
+        /* Piece Profile */
+        .piece-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
+        .piece-tile {
+            background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 16px 8px; text-align: center;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .piece-tile:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); }
+        .piece-tile.best-match { border-color: rgba(0,99,229,0.35); background: rgba(0,99,229,0.05); }
+        .piece-tile.selected { border-color: #0063e5; background: rgba(0,99,229,0.15); box-shadow: 0 0 20px rgba(0,99,229,0.2); }
+        .piece-icon { font-size: 2em; line-height: 1; margin-bottom: 6px; }
+        .piece-tile-name { font-size: 0.8em; font-weight: 600; margin-bottom: 4px; letter-spacing: 0.3px; }
+        .piece-tile-pct { font-size: 0.75em; opacity: 0.7; font-weight: 500; }
+        .piece-tile.selected .piece-tile-pct { opacity: 1; color: #60a5fa; }
+
+        .piece-detail {
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px; padding: 18px;
+        }
+        .piece-detail-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .piece-detail-icon { font-size: 1.4em; }
+        .piece-detail-name { font-size: 1em; font-weight: 600; }
+        .piece-detail-tag { font-size: 0.7em; padding: 2px 8px; border-radius: 10px; background: rgba(0,99,229,0.2); color: #60a5fa; font-weight: 500; }
+        .piece-detail-desc { font-size: 0.85em; color: #cacaca; line-height: 1.6; margin-bottom: 14px; }
+        .piece-dims { display: grid; gap: 6px; }
+        .piece-dim-row { display: flex; align-items: center; font-size: 0.78em; }
+        .piece-dim-label { width: 80px; opacity: 0.8; font-weight: 500; }
+        .piece-dim-bar { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin: 0 8px; overflow: hidden; }
+        .piece-dim-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+        .piece-dim-fill.dim-high { background: #22c55e; }
+        .piece-dim-fill.dim-mid { background: #f59e0b; }
+        .piece-dim-fill.dim-low { background: #ef4444; }
+        .piece-dim-val { width: 30px; text-align: right; opacity: 0.85; font-weight: 500; }
+        .piece-dim-expected { width: 48px; text-align: right; font-size: 0.9em; opacity: 0.5; font-weight: 500; }
+
+        .piece-auto-label { font-size: 0.72em; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.4); margin-top: 12px; text-align: center; }
+        .piece-auto-label a { color: #0080ff; cursor: pointer; text-decoration: none; }
+        .piece-auto-label a:hover { text-decoration: underline; }
+
+        .piece-indicator { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.15); text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .piece-indicator-icon { font-size: 1.3em; }
+        .piece-indicator-text { font-size: 0.82em; opacity: 0.85; font-weight: 500; }
+
         @media (max-width: 1024px) {
             .main-container { flex-direction: column-reverse; }
             .score-sidebar { position: relative; top: 0; width: 100%; max-width: 400px; margin: 0 auto; }
@@ -336,6 +379,11 @@
             .radio-option { min-width: 70px; }
             .radio-option label { padding: 10px 6px; font-size: 0.85em; }
             .help-modal { padding: 20px; }
+            .piece-grid { grid-template-columns: repeat(3, 1fr); }
+            .piece-tile { padding: 12px 6px; }
+            .piece-icon { font-size: 1.6em; }
+            .piece-dim-label { width: 65px; }
+            .piece-dim-expected { width: 40px; font-size: 0.8em; }
         }
     </style>
 </head>
@@ -751,6 +799,49 @@
                 </div>
             </div>
 
+            <!-- Piece Profile -->
+            <div class="card" id="piece-card">
+                <h2 class="section-title">Piece Profile</h2>
+                <p class="control-description" style="margin-bottom:18px">Based on the <a href="https://minibooks.lucianoadonis.com/pages/thesis-the-core-five" target="_blank" rel="noopener" style="color:#0080ff">Core Five</a> dimensions, which chess piece does this candidate resemble? Scores auto-suggest a match — click to override.</p>
+                <div class="piece-grid">
+                    <div class="piece-tile" id="piece-queen" onclick="selectPiece('queen')">
+                        <div class="piece-icon">&#9819;</div>
+                        <div class="piece-tile-name">Queen</div>
+                        <div class="piece-tile-pct" id="pct-queen">—</div>
+                    </div>
+                    <div class="piece-tile" id="piece-rook" onclick="selectPiece('rook')">
+                        <div class="piece-icon">&#9820;</div>
+                        <div class="piece-tile-name">Rook</div>
+                        <div class="piece-tile-pct" id="pct-rook">—</div>
+                    </div>
+                    <div class="piece-tile" id="piece-bishop" onclick="selectPiece('bishop')">
+                        <div class="piece-icon">&#9821;</div>
+                        <div class="piece-tile-name">Bishop</div>
+                        <div class="piece-tile-pct" id="pct-bishop">—</div>
+                    </div>
+                    <div class="piece-tile" id="piece-knight" onclick="selectPiece('knight')">
+                        <div class="piece-icon">&#9822;</div>
+                        <div class="piece-tile-name">Knight</div>
+                        <div class="piece-tile-pct" id="pct-knight">—</div>
+                    </div>
+                    <div class="piece-tile" id="piece-pawn" onclick="selectPiece('pawn')">
+                        <div class="piece-icon">&#9823;</div>
+                        <div class="piece-tile-name">Pawn</div>
+                        <div class="piece-tile-pct" id="pct-pawn">—</div>
+                    </div>
+                </div>
+                <div class="piece-detail" id="piece-detail">
+                    <div class="piece-detail-header">
+                        <span class="piece-detail-icon" id="piece-detail-icon">&#9819;</span>
+                        <span class="piece-detail-name" id="piece-detail-name">Queen</span>
+                        <span class="piece-detail-tag" id="piece-detail-tag">Best Match</span>
+                    </div>
+                    <p class="piece-detail-desc" id="piece-detail-desc"></p>
+                    <div class="piece-dims" id="piece-dims"></div>
+                </div>
+                <div class="piece-auto-label" id="piece-auto-label">Auto-detected from scores</div>
+            </div>
+
             <!-- Notes -->
             <div class="card">
                 <h2 class="section-title">Interviewer Notes</h2>
@@ -776,6 +867,10 @@
                     <div class="breakdown-item"><span class="breakdown-label">Problem</span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-solve" style="width:50%"></div></div><span class="breakdown-val" id="val-solve">3/6</span></div>
                     <div class="breakdown-item"><span class="breakdown-label">Vibe</span><div class="breakdown-bar"><div class="breakdown-fill" id="bar-vibe" style="width:50%"></div></div><span class="breakdown-val" id="val-vibe">3/6</span></div>
                     <div class="score-total">Total: <strong><span id="score-total">18</span>/36</strong></div>
+                    <div class="piece-indicator">
+                        <span class="piece-indicator-icon" id="sidebar-piece-icon">&#9819;</span>
+                        <span class="piece-indicator-text" id="sidebar-piece-name">Queen (67%)</span>
+                    </div>
                 </div>
                 <div class="sidebar-buttons">
                     <button class="download-btn download-btn-primary" onclick="downloadInternal()">Download Internal Review</button>
@@ -1263,6 +1358,50 @@
             { min: 0,  label: 'No Pass',       cls: 'verdict-no-pass' }
         ];
 
+        // ── Piece Profile (The Core Five) ──
+        var DIMENSION_MAP = {
+            tech: 'Power', comm: 'Range', story: 'Foresight',
+            own: 'Insight', vibe: 'Versatility', solve: 'Speed'
+        };
+        var DIMENSION_ORDER = ['Power', 'Range', 'Foresight', 'Insight', 'Versatility', 'Speed'];
+        var DIM_TO_CAT = {};
+        for (var dk in DIMENSION_MAP) DIM_TO_CAT[DIMENSION_MAP[dk]] = dk;
+
+        var PIECE_PROFILES = {
+            queen: {
+                name: 'Queen', icon: '\u265B',
+                dims: { Power: 'high', Range: 'high', Foresight: 'high', Insight: 'high', Versatility: 'high', Speed: 'high' },
+                desc: 'The lead who moves in any direction. High across all dimensions \u2014 unblocks situations, provides direction, handles the big picture. The risk is dependency: a team that routes everything through one person has a bottleneck wearing a crown.',
+                role: 'Managers, tech leads, senior architects who operate across all fronts.'
+            },
+            rook: {
+                name: 'Rook', icon: '\u265C',
+                dims: { Power: 'high', Range: 'low', Foresight: 'low', Insight: 'medium', Versatility: 'low', Speed: 'high' },
+                desc: 'The straight-line specialist. High Power and Speed within their lanes. Point them at a well-defined problem and they deliver faster than anyone. The limitation is direction \u2014 they force straight-line answers to problems that may need lateral thinking.',
+                role: 'Execution-heavy roles with clear scope. Incident response, migration specialists, focused delivery.'
+            },
+            bishop: {
+                name: 'Bishop', icon: '\u265D',
+                dims: { Power: 'low', Range: 'medium', Foresight: 'high', Insight: 'high', Versatility: 'medium', Speed: 'low' },
+                desc: 'The diagonal thinker. High Foresight and Insight \u2014 sees patterns, anticipates risks, flags dependency issues three sprints early. Easy to undervalue because their output is invisible: they prevent problems rather than solve them loudly.',
+                role: 'Architecture, planning, risk assessment. Roles where seeing around corners matters more than shipping fast.'
+            },
+            knight: {
+                name: 'Knight', icon: '\u265E',
+                dims: { Power: 'medium', Range: 'high', Foresight: 'medium', Insight: 'medium', Versatility: 'high', Speed: 'medium' },
+                desc: 'The unconventional mover. High Versatility and Range \u2014 approaches problems sideways, jumps over blockers, produces solutions that work across contexts. Value increases in complex positions with many constraints.',
+                role: 'Cross-team problems, innovation, complex multi-stakeholder environments.'
+            },
+            pawn: {
+                name: 'Pawn', icon: '\u265F',
+                dims: { Power: 'low', Range: 'low', Foresight: 'low', Insight: 'low', Versatility: 'low', Speed: 'low' },
+                desc: 'Potential. Junior engineers or people in unfamiliar contexts who have not yet developed their profile. The unique property is promotion \u2014 given the right conditions, a pawn develops into any other piece. The path depends on what the project and mentorship actually develop.',
+                role: 'Entry-level, new hires, career changers. Placement and mentorship determine which piece they become.'
+            }
+        };
+
+        var selectedPiece = null;
+
         // ── Helpers ──
         function getVal(name) {
             const el = document.querySelector('input[name="' + name + '"]:checked');
@@ -1308,6 +1447,78 @@
         }
         document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeHelp(); });
 
+        // ── Piece Profile logic ──
+        function dimMatchScore(actual, expected) {
+            if (expected === 'high') return actual >= 5 ? 2 : actual >= 4 ? 1 : 0;
+            if (expected === 'medium') return (actual >= 3 && actual <= 4) ? 2 : (actual === 2 || actual === 5) ? 1 : 0;
+            return actual <= 2 ? 2 : actual === 3 ? 1 : 0;
+        }
+        function calculatePieceMatches() {
+            var catScores = {};
+            for (var k in CATEGORIES) catScores[k] = getCatScore(k);
+            var matches = {};
+            for (var p in PIECE_PROFILES) {
+                var profile = PIECE_PROFILES[p];
+                var total = 0;
+                DIMENSION_ORDER.forEach(function(dim) {
+                    total += dimMatchScore(catScores[DIM_TO_CAT[dim]], profile.dims[dim]);
+                });
+                matches[p] = Math.round((total / 12) * 100);
+            }
+            return matches;
+        }
+        function getBestPiece(matches) {
+            var best = null, bestScore = -1;
+            for (var p in matches) {
+                if (matches[p] > bestScore) { bestScore = matches[p]; best = p; }
+            }
+            return best;
+        }
+        function selectPiece(key) {
+            selectedPiece = (selectedPiece === key) ? null : key;
+            updatePieceMatrix();
+        }
+        function resetPieceSelection() {
+            selectedPiece = null;
+            updatePieceMatrix();
+        }
+        function updatePieceMatrix() {
+            var matches = calculatePieceMatches();
+            var best = getBestPiece(matches);
+            var active = selectedPiece || best;
+            for (var p in PIECE_PROFILES) {
+                var tile = document.getElementById('piece-' + p);
+                document.getElementById('pct-' + p).textContent = matches[p] + '%';
+                var cls = 'piece-tile';
+                if (p === active) cls += ' selected';
+                else if (p === best && selectedPiece) cls += ' best-match';
+                tile.className = cls;
+            }
+            var profile = PIECE_PROFILES[active];
+            document.getElementById('piece-detail-icon').textContent = profile.icon;
+            document.getElementById('piece-detail-name').textContent = profile.name;
+            document.getElementById('piece-detail-tag').textContent = (selectedPiece ? 'Manual' : 'Best Match') + ' \u2014 ' + matches[active] + '%';
+            document.getElementById('piece-detail-desc').textContent = profile.desc;
+            var dimsHtml = '';
+            DIMENSION_ORDER.forEach(function(dim) {
+                var cat = DIM_TO_CAT[dim];
+                var score = getCatScore(cat);
+                var pct = Math.round((score / 6) * 100);
+                var expected = profile.dims[dim];
+                var m = dimMatchScore(score, expected);
+                var fillCls = m === 2 ? 'dim-high' : m === 1 ? 'dim-mid' : 'dim-low';
+                dimsHtml += '<div class="piece-dim-row"><span class="piece-dim-label">' + dim + '</span>';
+                dimsHtml += '<div class="piece-dim-bar"><div class="piece-dim-fill ' + fillCls + '" style="width:' + pct + '%"></div></div>';
+                dimsHtml += '<span class="piece-dim-val">' + score + '/6</span>';
+                dimsHtml += '<span class="piece-dim-expected">' + expected.charAt(0).toUpperCase() + expected.slice(1) + '</span></div>';
+            });
+            document.getElementById('piece-dims').innerHTML = dimsHtml;
+            var autoLabel = document.getElementById('piece-auto-label');
+            autoLabel.innerHTML = selectedPiece ? '<a onclick="resetPieceSelection()">Reset to auto-detect</a>' : 'Auto-detected from scores';
+            document.getElementById('sidebar-piece-icon').textContent = profile.icon;
+            document.getElementById('sidebar-piece-name').textContent = profile.name + ' (' + matches[active] + '%)';
+        }
+
         // ── Core calculation ──
         function calculate() {
             var total = 0;
@@ -1327,6 +1538,7 @@
             document.getElementById('score-total').textContent = total;
             document.getElementById('score-card').className = 'score-card ' + verdict.cls;
             updateProbeIndicators();
+            updatePieceMatrix();
         }
 
         // ── Probe indicators ──
@@ -1412,6 +1624,25 @@
                 }
             }
             md += '---\n\n';
+
+            // Piece Profile
+            var rpMatches = calculatePieceMatches();
+            var rpBest = getBestPiece(rpMatches);
+            var rpActive = selectedPiece || rpBest;
+            var rpProfile = PIECE_PROFILES[rpActive];
+            md += '## Piece Profile\n\n';
+            md += '**Identified Piece:** ' + rpProfile.icon + ' ' + rpProfile.name + ' (' + rpMatches[rpActive] + '% match)  \n';
+            if (selectedPiece && selectedPiece !== rpBest) {
+                md += '**Auto-detected:** ' + PIECE_PROFILES[rpBest].name + ' (' + rpMatches[rpBest] + '% match)  \n';
+            }
+            md += '\n' + rpProfile.desc + '\n\n';
+            md += '**Suggested fit:** ' + rpProfile.role + '\n\n';
+            md += '| Dimension | Category | Score | Expected |\n|-----------|----------|-------|----------|\n';
+            DIMENSION_ORDER.forEach(function(dim) {
+                var cat = DIM_TO_CAT[dim];
+                md += '| ' + dim + ' | ' + CATEGORIES[cat].short + ' | ' + getCatScore(cat) + '/6 | ' + rpProfile.dims[dim].charAt(0).toUpperCase() + rpProfile.dims[dim].slice(1) + ' |\n';
+            });
+            md += '\n---\n\n';
 
             var strengths = [], concerns = [], weakCats = [];
             for (var k2 in CATEGORIES) {
@@ -1524,6 +1755,7 @@
             document.getElementById('tech-probes').removeAttribute('open');
             document.getElementById('own-probes').removeAttribute('open');
             document.getElementById('solve-probes').removeAttribute('open');
+            selectedPiece = null;
             calculate();
         }
 

@@ -123,7 +123,7 @@ test.describe('Categories', () => {
     await page.goto(PAGE);
     const cards = page.locator('.content-area > .card');
     const count = await cards.count();
-    expect(count).toBe(8); // 6 categories + candidate + notes
+    expect(count).toBe(9); // 6 categories + candidate + piece profile + notes
 
     for (let i = 1; i <= 6; i++) {
       const questions = cards.nth(i).locator(':scope > .control-group');
@@ -494,6 +494,94 @@ test.describe('Verdict Thresholds', () => {
     await setQuestion(page, 'story-2', 2);
     await setQuestion(page, 'story-3', 2);
     await expect(page.locator('#verdict-label')).toHaveText('Unlikely');
+  });
+});
+
+// ── Piece Profile ──
+
+test.describe('Piece Profile', () => {
+  test('piece profile card is visible with all 5 pieces', async ({ page }) => {
+    await page.goto(PAGE);
+    await expect(page.locator('#piece-card')).toBeVisible();
+    const tiles = page.locator('.piece-tile');
+    await expect(tiles).toHaveCount(5);
+  });
+
+  test('default scores auto-detect Knight as best match', async ({ page }) => {
+    await page.goto(PAGE);
+    // At default (all 3/6), Knight has highest match due to medium profile
+    await expect(page.locator('#piece-knight')).toHaveClass(/selected/);
+    await expect(page.locator('#piece-detail-name')).toHaveText('Knight');
+    await expect(page.locator('#piece-detail-tag')).toContainText('Best Match');
+  });
+
+  test('strong candidate matches Queen', async ({ page }) => {
+    await page.goto(PAGE);
+    await setAllBase(page, 2);
+    await expect(page.locator('#piece-queen')).toHaveClass(/selected/);
+    await expect(page.locator('#piece-detail-name')).toHaveText('Queen');
+    await expect(page.locator('#pct-queen')).toHaveText('100%');
+  });
+
+  test('weak candidate matches Pawn', async ({ page }) => {
+    await page.goto(PAGE);
+    await setAllBase(page, 0);
+    await expect(page.locator('#piece-pawn')).toHaveClass(/selected/);
+    await expect(page.locator('#piece-detail-name')).toHaveText('Pawn');
+    await expect(page.locator('#pct-pawn')).toHaveText('100%');
+  });
+
+  test('clicking a piece selects it manually', async ({ page }) => {
+    await page.goto(PAGE);
+    await page.locator('#piece-rook').click();
+    await expect(page.locator('#piece-rook')).toHaveClass(/selected/);
+    await expect(page.locator('#piece-detail-name')).toHaveText('Rook');
+    await expect(page.locator('#piece-detail-tag')).toContainText('Manual');
+    await expect(page.locator('#piece-auto-label a')).toHaveText('Reset to auto-detect');
+  });
+
+  test('clicking selected piece deselects back to auto', async ({ page }) => {
+    await page.goto(PAGE);
+    await page.locator('#piece-bishop').click();
+    await expect(page.locator('#piece-detail-tag')).toContainText('Manual');
+    await page.locator('#piece-bishop').click();
+    await expect(page.locator('#piece-detail-tag')).toContainText('Best Match');
+  });
+
+  test('sidebar shows piece indicator', async ({ page }) => {
+    await page.goto(PAGE);
+    await expect(page.locator('#sidebar-piece-icon')).toBeVisible();
+    await expect(page.locator('#sidebar-piece-name')).toContainText('%');
+  });
+
+  test('piece match percentages update with scores', async ({ page }) => {
+    await page.goto(PAGE);
+    const queenBefore = await page.locator('#pct-queen').textContent();
+    await setAllBase(page, 2);
+    const queenAfter = await page.locator('#pct-queen').textContent();
+    expect(queenBefore).not.toBe(queenAfter);
+  });
+
+  test('piece detail shows dimension bars', async ({ page }) => {
+    await page.goto(PAGE);
+    const dims = page.locator('#piece-dims .piece-dim-row');
+    await expect(dims).toHaveCount(6);
+  });
+
+  test('reset clears piece selection to auto', async ({ page }) => {
+    await page.goto(PAGE);
+    await page.locator('#piece-bishop').click();
+    await expect(page.locator('#piece-detail-tag')).toContainText('Manual');
+    await page.locator('.reset-button').click();
+    await expect(page.locator('#piece-detail-tag')).toContainText('Best Match');
+  });
+
+  test('internal report includes piece profile section', async ({ page }) => {
+    await page.goto(PAGE);
+    const md = await page.evaluate(() => generateInternalReport());
+    expect(md).toContain('## Piece Profile');
+    expect(md).toContain('Identified Piece');
+    expect(md).toContain('Dimension');
   });
 });
 

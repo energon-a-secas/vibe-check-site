@@ -90,6 +90,31 @@ Based on practical experience from conducting and preparing people for technical
 | 17 | Do they show genuine role interest? | Asks specific questions, researched | Somewhat interested | Going through the motions | Engagement predictor |
 | 18 | Is their response pace reasonable? | Concise and confident | Slow but eventually gets there | Painfully slow or rambling | Client interaction readiness |
 
+## Piece Profile
+
+Based on [The Core Five](https://minibooks.lucianoadonis.com/pages/thesis-the-core-five) framework, the tool maps assessment scores to chess piece archetypes. Each of the 6 assessment categories maps to a dimension:
+
+| Category | Dimension | What It Represents |
+|----------|-----------|-------------------|
+| Technical Credibility | Power | Raw technical capability and depth |
+| Communication & Clarity | Range | Breadth of solutions across contexts |
+| Story Consistency | Foresight | Ability to anticipate and plan ahead |
+| Ownership & Accountability | Insight | Contextual awareness and decision-making |
+| The Vibe | Versatility | Adaptability across teams and situations |
+| Problem-Solving & Pressure | Speed | Performance under pressure and deadlines |
+
+### The Pieces
+
+| Piece | Profile | Best For |
+|-------|---------|----------|
+| Queen | High across all dimensions | Leads, architects, people who unblock entire teams |
+| Rook | High Power + Speed, low Range/Versatility | Execution-heavy roles with clear, well-defined scope |
+| Bishop | High Foresight + Insight, low Power/Speed | Architecture, planning, risk assessment |
+| Knight | High Range + Versatility, medium elsewhere | Cross-team problems, innovation, complex environments |
+| Pawn | Low across all (currently) | Juniors with promotion potential — placement determines growth |
+
+The tool auto-detects the best-matching piece from scores. Interviewers can override the selection to reflect their own assessment. The piece profile is included in the internal review report.
+
 ## Scoring
 
 - **Max score:** 36 (18 questions x 2 points each)

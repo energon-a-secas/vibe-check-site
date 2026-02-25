@@ -39,6 +39,46 @@ VERDICTS = [
 ]
 
 
+# ── Piece Profile matching (mirrors index.html logic) ──
+
+DIMENSION_MAP = {
+    "tech": "Power", "comm": "Range", "story": "Foresight",
+    "own": "Insight", "vibe": "Versatility", "solve": "Speed",
+}
+DIMENSION_ORDER = ["Power", "Range", "Foresight", "Insight", "Versatility", "Speed"]
+DIM_TO_CAT = {v: k for k, v in DIMENSION_MAP.items()}
+
+PIECE_PROFILES = {
+    "queen":  {"Power": "high", "Range": "high", "Foresight": "high", "Insight": "high", "Versatility": "high", "Speed": "high"},
+    "rook":   {"Power": "high", "Range": "low", "Foresight": "low", "Insight": "medium", "Versatility": "low", "Speed": "high"},
+    "bishop": {"Power": "low", "Range": "medium", "Foresight": "high", "Insight": "high", "Versatility": "medium", "Speed": "low"},
+    "knight": {"Power": "medium", "Range": "high", "Foresight": "medium", "Insight": "medium", "Versatility": "high", "Speed": "medium"},
+    "pawn":   {"Power": "low", "Range": "low", "Foresight": "low", "Insight": "low", "Versatility": "low", "Speed": "low"},
+}
+
+
+def dim_match_score(actual: int, expected: str) -> int:
+    """Score how well an actual category score matches the expected level."""
+    if expected == "high":
+        return 2 if actual >= 5 else (1 if actual >= 4 else 0)
+    if expected == "medium":
+        return 2 if 3 <= actual <= 4 else (1 if actual in (2, 5) else 0)
+    # low
+    return 2 if actual <= 2 else (1 if actual == 3 else 0)
+
+
+def calculate_piece_matches(category_scores: dict) -> dict:
+    """Calculate match percentage for each piece based on category scores."""
+    matches = {}
+    for piece, dims in PIECE_PROFILES.items():
+        total = sum(
+            dim_match_score(category_scores[DIM_TO_CAT[dim]], dims[dim])
+            for dim in DIMENSION_ORDER
+        )
+        matches[piece] = round((total / 12) * 100)
+    return matches
+
+
 def get_verdict(pct: int) -> dict:
     for v in VERDICTS:
         if pct >= v["min"]:
@@ -78,6 +118,10 @@ def calculate_score(answers: dict) -> dict:
     concerns = [cat_key for cat_key, s in category_scores.items() if s <= 2]
     weak_cats = [cat_key for cat_key, s in category_scores.items() if s <= 3]
 
+    # Piece profile matching
+    piece_matches = calculate_piece_matches(category_scores)
+    best_piece = max(piece_matches, key=piece_matches.get)
+
     return {
         "total": total,
         "max": 36,
@@ -92,6 +136,8 @@ def calculate_score(answers: dict) -> dict:
         "own_probe_recommended": own_weak,
         "solve_probe_recommended": solve_weak,
         "probe_scores": probe_scores,
+        "piece_matches": piece_matches,
+        "best_piece": best_piece,
     }
 
 
@@ -461,6 +507,98 @@ class TestStrengthsAndConcerns(unittest.TestCase):
         self.assertEqual(len(result["weak_categories"]), 0)
 
 
+class TestPieceProfile(unittest.TestCase):
+    """Tests for piece profile matching (The Core Five)."""
+
+    def test_strong_candidate_is_queen(self):
+        result = calculate_score(STRONG_CANDIDATE["answers"])
+        self.assertEqual(result["best_piece"], "queen")
+        self.assertEqual(result["piece_matches"]["queen"], 100)
+
+    def test_weak_candidate_is_pawn(self):
+        result = calculate_score(WEAK_CANDIDATE["answers"])
+        self.assertEqual(result["best_piece"], "pawn")
+        self.assertEqual(result["piece_matches"]["pawn"], 100)
+
+    def test_neutral_candidate_is_knight(self):
+        """All 3/6 scores match Knight's medium profile best."""
+        result = calculate_score(NEUTRAL_CANDIDATE["answers"])
+        self.assertEqual(result["best_piece"], "knight")
+        self.assertEqual(result["piece_matches"]["knight"], 67)
+
+    def test_rook_profile(self):
+        """High tech + solve, low everything else → Rook."""
+        answers = {q: 0 for q in ALL_QUESTIONS}
+        for q in ["tech-1", "tech-2", "tech-3"]:
+            answers[q] = 2
+        for q in ["solve-1", "solve-2", "solve-3"]:
+            answers[q] = 2
+        # own at medium
+        for q in ["own-1", "own-2", "own-3"]:
+            answers[q] = 1
+        result = calculate_score(answers)
+        self.assertEqual(result["best_piece"], "rook")
+
+    def test_bishop_profile(self):
+        """High story + own, low tech + solve, medium comm + vibe → Bishop."""
+        answers = {q: 0 for q in ALL_QUESTIONS}
+        for q in ["story-1", "story-2", "story-3"]:
+            answers[q] = 2
+        for q in ["own-1", "own-2", "own-3"]:
+            answers[q] = 2
+        for q in ["comm-1", "comm-2"]:
+            answers[q] = 2
+        for q in ["vibe-1", "vibe-2"]:
+            answers[q] = 2
+        result = calculate_score(answers)
+        self.assertEqual(result["best_piece"], "bishop")
+
+    def test_knight_profile(self):
+        """High comm + vibe, medium everything else → Knight."""
+        answers = {q: 1 for q in ALL_QUESTIONS}
+        for q in ["comm-1", "comm-2", "comm-3"]:
+            answers[q] = 2
+        for q in ["vibe-1", "vibe-2", "vibe-3"]:
+            answers[q] = 2
+        result = calculate_score(answers)
+        self.assertEqual(result["best_piece"], "knight")
+
+    def test_dim_match_score_high(self):
+        self.assertEqual(dim_match_score(6, "high"), 2)
+        self.assertEqual(dim_match_score(5, "high"), 2)
+        self.assertEqual(dim_match_score(4, "high"), 1)
+        self.assertEqual(dim_match_score(3, "high"), 0)
+
+    def test_dim_match_score_medium(self):
+        self.assertEqual(dim_match_score(4, "medium"), 2)
+        self.assertEqual(dim_match_score(3, "medium"), 2)
+        self.assertEqual(dim_match_score(2, "medium"), 1)
+        self.assertEqual(dim_match_score(5, "medium"), 1)
+        self.assertEqual(dim_match_score(0, "medium"), 0)
+
+    def test_dim_match_score_low(self):
+        self.assertEqual(dim_match_score(0, "low"), 2)
+        self.assertEqual(dim_match_score(2, "low"), 2)
+        self.assertEqual(dim_match_score(3, "low"), 1)
+        self.assertEqual(dim_match_score(4, "low"), 0)
+
+    def test_nervous_capable_piece(self):
+        """Nervous but Capable: high in 4/6 categories → Queen-like despite weak comm/vibe."""
+        result = calculate_score(NERVOUS_BUT_CAPABLE["answers"])
+        # 4 high categories (tech, story, own, solve) match Queen's all-high profile best
+        self.assertEqual(result["best_piece"], "queen")
+
+    def test_piece_matches_sum_to_reasonable_values(self):
+        """All match percentages should be between 0 and 100."""
+        import random
+        for _ in range(50):
+            answers = {q: random.choice([0, 1, 2]) for q in ALL_QUESTIONS}
+            result = calculate_score(answers)
+            for piece, pct in result["piece_matches"].items():
+                self.assertGreaterEqual(pct, 0)
+                self.assertLessEqual(pct, 100)
+
+
 class TestEdgeCases(unittest.TestCase):
     """Edge cases and boundary conditions."""
 
@@ -524,7 +662,8 @@ if __name__ == "__main__":
             if r["solve_probe_recommended"]:
                 parts.append("solve")
             probes_str += " + ".join(parts) + "]"
-        print(f"  {p['name']:40s} {r['total']:2d}/36 ({r['percentage']:3d}%) -> {r['verdict']}{probes_str}")
+        piece_str = f" [{r['best_piece'].title()} {r['piece_matches'][r['best_piece']]}%]"
+        print(f"  {p['name']:40s} {r['total']:2d}/36 ({r['percentage']:3d}%) -> {r['verdict']}{probes_str}{piece_str}")
         if p["description"]:
             print(f"    {p['description']}")
         if r["strengths"]:

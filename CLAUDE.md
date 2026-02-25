@@ -9,13 +9,13 @@ Interview Vibes is a single-file static HTML assessment tool that helps intervie
 ## Commands
 
 ```bash
-# Run Playwright E2E tests (49 tests — spins up a local server automatically)
+# Run Playwright E2E tests (60 tests — spins up a local server automatically)
 npm test
 
 # Run Playwright tests with browser visible
 npm run test:headed
 
-# Run Python scoring logic tests (38 tests across 9 candidate profiles)
+# Run Python scoring logic tests (49 tests across 9 candidate profiles)
 npm run test:scoring
 # or directly:
 python3 test_scoring.py
@@ -37,14 +37,20 @@ All CSS, HTML, and JavaScript are embedded in one file (~80KB). No external depe
 - `HELP_CONTENT` — 21 entries with `title`, `objective`, `ask[]`, `lookFor[]` for the help modal
 - `SUGGESTIONS` — per-category templates for report generation (strength/concern text, tips)
 - `VERDICTS` — threshold array: 83%+ Strong Pass, 67-82% Likely Pass, 50-66% Borderline, 33-49% Unlikely, 0-32% No Pass
+- `DIMENSION_MAP` — maps 6 category keys to Core Five dimensions (tech→Power, comm→Range, story→Foresight, own→Insight, vibe→Versatility, solve→Speed)
+- `PIECE_PROFILES` — defines 5 chess piece archetypes (queen, rook, bishop, knight, pawn) with expected dimension levels (high/medium/low), descriptions, and suggested roles
 
 **Key functions**:
-- `calculate()` — main scoring loop, updates sidebar badges/bars in real-time
+- `calculate()` — main scoring loop, updates sidebar badges/bars in real-time, triggers piece profile update
 - `updateProbeIndicators()` — toggles "Optional"/"Recommended" on probe dropdowns when any tech/own question scores 0
+- `updatePieceMatrix()` — calculates piece match percentages from category scores, updates piece tiles, detail panel, and sidebar indicator
+- `dimMatchScore(actual, expected)` — scores how well a category score matches a piece's expected dimension level (0/1/2)
+- `calculatePieceMatches()` / `getBestPiece()` — compute match % for all pieces, return best match
+- `selectPiece(key)` / `resetPieceSelection()` — manual piece override and reset to auto-detect
 - `showHelp(questionId)` / `closeHelp()` — help modal with interviewing tips
 - `generateInternalReport()` / `generateCandidateReport()` — builds Markdown strings for download
 - `downloadMarkdown(content, filename)` — Blob/URL.createObjectURL file download
-- `resetAssessment()` — clears all inputs, closes probe dropdowns
+- `resetAssessment()` — clears all inputs, closes probe dropdowns, resets piece selection
 
 **Probe questions**: 8 optional probes (tech-p1, tech-p2, own-p1, solve-p1 through solve-p5) live inside `<details>/<summary>` dropdowns. They are tracked separately and do NOT affect the main score. The probe tag changes from "Optional" to "Recommended" when any question in that category scores 0.
 
@@ -52,14 +58,16 @@ All CSS, HTML, and JavaScript are embedded in one file (~80KB). No external depe
 
 Python unittest suite that replicates the JS scoring algorithm. Contains:
 - `calculate_score(answers)` — Python mirror of the JS `calculate()` function
+- `dim_match_score(actual, expected)` / `calculate_piece_matches(category_scores)` — Python mirrors of JS piece matching
 - 9 candidate profiles (STRONG_CANDIDATE, AI_ONLY_CANDIDATE, GOOD_TALKER_BAD_DOER, NERVOUS_BUT_CAPABLE, etc.)
-- 6 test classes: TestScoringEngine, TestVerdicts, TestProbeRecommendations, TestCandidateProfiles, TestStrengthsAndConcerns, TestEdgeCases
+- 7 test classes: TestScoringEngine, TestVerdicts, TestProbeRecommendations, TestCandidateProfiles, TestStrengthsAndConcerns, TestPieceProfile, TestEdgeCases
 
-**Scoring parity**: When modifying scoring logic in the HTML, the same change must be reflected in `test_scoring.py`'s `calculate_score()` function and vice versa. The two must stay in sync.
+**Scoring parity**: When modifying scoring logic in the HTML, the same change must be reflected in `test_scoring.py`'s `calculate_score()` function and vice versa. The two must stay in sync. This includes piece matching logic (`PIECE_PROFILES`, `dim_match_score`, `calculate_piece_matches`).
 
 ### Content files
 
 - `part-1.md`, `part-2.md`, `part-3.md` — Interview philosophy articles (Spanish). These inform the question design but are not consumed by the app.
+- `reference/thesis-the-core-five-2.5.md` — The Core Five piece matrix theory. Maps chess pieces to dimension profiles (Power, Range, Foresight, Insight, Versatility, Speed). Source for the Piece Profile feature.
 - `calculator.html` — Separate tool (style reference only). Do not modify unless asked.
 
 ## Scoring Rules
