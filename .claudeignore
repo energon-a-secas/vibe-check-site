@@ -3,6 +3,4 @@ test-results/
 playwright-report/
 .playwright-mcp/
 blob-report/
-*.pyc
-__pycache__/
-.claude/
+package-lock.json
