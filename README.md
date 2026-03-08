@@ -184,6 +184,42 @@ python test_scoring.py
 
 Test profiles include: strong candidate, AI-only candidate, inconsistent storyteller, good talker with no substance, nervous but capable, and more.
 
+## Architecture
+
+```mermaid
+flowchart TB
+    User([User]) --> HTML["index.html\nApp shell"]
+
+    subgraph App["ES Modules (Ephemeral — No localStorage)"]
+        HTML --> app["app.js\nEntry point"]
+        app --> data["data.js\n18 questions, 8 probes, piece profiles"]
+        app --> scoring["scoring.js\nPass probability + Core Five matching"]
+        app --> reports["reports.js\nMarkdown report generation"]
+        app --> events["events.js\nScoring, piece selection, reset"]
+        app --> state["state.js\nSession state"]
+        app --> utils["utils.js\nHelpers"]
+    end
+
+    reports --> Downloads["Markdown downloads\nReviewer report + Candidate feedback"]
+```
+
+```
+interviews-site/
+├── index.html       # App shell
+├── css/
+│   └── style.css    # All styles
+└── js/
+    ├── app.js       # Entry point
+    ├── data.js      # 18 questions, 8 probes, piece profiles, verdict thresholds
+    ├── scoring.js   # Score calculation + Core Five piece matching
+    ├── reports.js   # Internal review + candidate feedback markdown generation
+    ├── events.js    # Score inputs, piece selection, reset, download
+    ├── state.js     # Ephemeral session state
+    └── utils.js     # Helpers
+```
+
+---
+
 ## Files
 
 - `index.html` — The assessment tool (single-file, no dependencies)
